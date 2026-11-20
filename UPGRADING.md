@@ -332,7 +332,7 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 
   This should be used instead of manually writing the div.
 
-  Parameters should not be json-serialized before being passed into the method.
+  Parameters should not be JSON-serialized before being passed into the method.
 
   For more information see [MDL-89296](https://tracker.moodle.org/browse/MDL-89296)
 - A new `\core\output\react_component_renderable` interface has been created to
@@ -733,7 +733,7 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 - Two new steps have been added to simplify testing of linear navigation: the course linear navigation should/should not be visible
 
   For more information see [MDL-87575](https://tracker.moodle.org/browse/MDL-87575)
-- Add a inline_help flag for course format setting elements.  When this flag is present in the setting definition, or set to true,  the help text is displayed as static text beneath the setting.
+- Add an inline_help flag for course format setting elements.  When this flag is present in the setting definition, or set to true,  the help text is displayed as static text beneath the setting.
 
   For more information see [MDL-88669](https://tracker.moodle.org/browse/MDL-88669)
 
@@ -852,7 +852,7 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 - Fixes a data-integrity bug: initial site registration truncated at 2000 characters when the site info was spread across the redirect to the hub, silently dropping the remainder. \core\hub\registration::register() now sends only the token, site URL, privacy policy agreement, contact email and language, and \core\hub\registration::confirm_registration() always sends the full site info afterwards. confirm_registration() now returns a bool indicating whether that full payload reached the hub; when it did not, a new \core\task\complete_hub_registration_task adhoc task is queued to retry it. \core\hub\api::call_rest() now throws a moodle_exception when the hub responds with a non-200 status, an empty body or a body that is not valid JSON, instead of silently treating such responses as success and losing the update.
 
   For more information see [MDL-89474](https://tracker.moodle.org/browse/MDL-89474)
-- Fixes a security gap: previously a registration secret alone was sufficient to submit registration updates for a site, so a leaked or stolen secret could be replayed by anyone holding it. \core\hub\api::update_registration() now signs each registration update: it sends additional timestamp and signature parameters with hub_update_site_info, where the signature is an HMAC-SHA256 over the site URL and timestamp keyed on md5() of the site's registration secret, proving control of the site rather than just possession of the secret. Signing is best effort; if a signature cannot be computed the update is still sent unsigned.
+- Fixes a security gap: previously a registration secret alone was sufficient to submit registration updates for a site, so a leaked or stolen secret could be replayed by anyone holding it. \core\hub\api::update_registration() now signs each registration update: it sends additional timestamp and signature parameters with hub_update_site_info, where the signature is an HMAC-SHA256 over the site URL, and the timestamp is keyed on md5() of the site's registration secret, proving control of the site rather than just possession of the secret. Signing is best effort; if a signature cannot be computed the update is still sent unsigned.
 
   For more information see [MDL-89512](https://tracker.moodle.org/browse/MDL-89512)
 
@@ -873,7 +873,7 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
   For more information see [MDL-84635](https://tracker.moodle.org/browse/MDL-84635)
 - The report `join` trait contains new `prepend_join[s]` methods, which are called from the base entity to ensure entity joins are automatically prepended to all entity columns, filters and conditions
 
-  Entity implementations no longer have to manually add boilerplace to add the same joins to their own columns, filters and conditions
+  Entity implementations no longer have to manually add boilerplate to add the same joins to their own columns, filters and conditions
 
   For more information see [MDL-87405](https://tracker.moodle.org/browse/MDL-87405)
 - New `add_header_attributes(...)` method on column class instances for defining additional header attributes for the column when rendered in a report
@@ -974,7 +974,7 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 
 #### Added
 
-- Added set_soft_retry_delay(), get_soft_retry_delay() and is_adhoc_task_delayed() methods. Call set_soft_retry_delay() from within an adhoc task's execute() method to request a soft retry via manager::adhoc_task_delayed() without marking the task as failed. Pass null for automatic exponential backoff or a positive integer for an explicit delay in seconds.
+- Added set_soft_retry_delay(), get_soft_retry_delay() and is_adhoc_task_delayed() methods. Call set_soft_retry_delay() from within an ad hoc task's execute() method to request a soft retry via manager::adhoc_task_delayed() without marking the task as failed. Pass null for automatic exponential backoff or a positive integer for an explicit delay in seconds.
 
   For more information see [MDL-79763](https://tracker.moodle.org/browse/MDL-79763)
 
@@ -1123,7 +1123,7 @@ The format of this change log follows the advice given at [Keep a CHANGELOG](htt
 
 #### Removed
 
-- Classic theme has been removed from core. During the upgrade, if the Classic theme files are not present, compatible Classic settings are migrated to the Boost theme and the Classic theme is uninstalled. The uninstallation removes all Classic theme settings, and any course, course category, cohort and user themes that referenced Classic are reset. To keep using the Classic theme with all its settings and theme selections intact, install it manually from the Moodle github repository BEFORE running the upgrade: the migration and uninstallation are then skipped entirely. Installing Classic after the upgrade results in a clean-slate theme, previous Classic settings and course/user theme selections are not restored and have to be configured again manually.
+- Classic theme has been removed from core. During the upgrade, if the Classic theme files are not present, compatible Classic settings are migrated to the Boost theme and the Classic theme is uninstalled. The uninstallation removes all Classic theme settings, and any course, course category, cohort and user themes that referenced Classic are reset. To keep using the Classic theme with all its settings and theme selections intact, install it manually from the Moodle GitHub repository BEFORE running the upgrade: the migration and uninstallation are then skipped entirely. Installing Classic after the upgrade results in a clean-slate theme, previous Classic settings and course/user theme selections are not restored and have to be configured again manually.
   The upgrade cannot change values forced in config.php: sites with $CFG->theme set to 'classic' there must update or remove that line manually, otherwise the site keeps requesting the removed theme and falls back to the default theme with a warning on every page.
   The migration copies the settings that were explicitly customised in Classic (unaddable blocks, brand colour, raw initial/pre SCSS, background and login background images) to Boost, keeping any existing Boost customisation where Classic held its default value. On sites where both themes had been customised, the resulting Boost configuration is therefore a mix of migrated Classic values and pre-existing Boost values, and should be reviewed after the upgrade. Theme presets and uploaded preset files are not migrated: presets are theme-specific SCSS entry points which Classic compiled wrapped in its own pre and post SCSS, so they would compile differently (or fail to compile) under Boost. Sites using a custom Classic preset should create an equivalent Boost preset after the upgrade. Migrated raw SCSS snippets that reference Classic variables or partials may also need to be reviewed. The Classic-only navbardark setting (dark navbar) has no Boost equivalent and is not migrated.
   Block positions are not migrated. Classic provided two block columns (side-pre and side-post) while Boost provides one (side-pre): blocks placed in regions that do not exist in Boost are not lost, they are displayed at the end of the default block region of each page, but their previous column placement and ordering are not preserved. Sites and courses relying on specific block positioning should review their block layout after the upgrade.
